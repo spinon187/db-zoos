@@ -60,6 +60,43 @@ server.get('/api/zoos/:id', async (req, res) => {
   }
 })
 
+server.put('/api/zoos/:id', async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const count = await db('zoos')
+      .where({id})
+      .update(req.body);
+    if (count > 0) {
+      const zoo = await db('zoos')
+        .where({id})
+        .first();
+      res.status(200).json(zoo);
+    }
+    else {
+      res.status(404).json({message: 'not found'});
+    }
+  } 
+  catch(error){}
+});
+
+server.delete('/api/zoos/:id', async (req, res) => {
+  const id = req.params.id;
+  
+  try {
+    const count = await db('zoos')
+      .where({id})
+      .del();
+
+    if (count > 0) {
+      res.status(204).end();
+    }
+    else {
+      res.status(404).json({message: 'not found'});
+    }
+  }
+  catch (error){}
+});
 
 
 const port = 3300;
